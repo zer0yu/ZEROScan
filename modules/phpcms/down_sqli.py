@@ -27,10 +27,8 @@ options = [
 ]
 
 def phpcms_exp(url):
-    
-    TIMEOUT=5
 
-    url = url if '://' in url else 'http://' + url
+    TIMEOUT=5
     url = url.split('#')[0].split('?')[0].rstrip('/').rstrip('/index.php')
 
     # use "*" to bypass filter "safe_replace()" in PHPCMS
