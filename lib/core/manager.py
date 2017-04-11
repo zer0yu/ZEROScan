@@ -6,6 +6,7 @@ import json
 import sqlite3
 from imp import find_module, load_module
 from lib.thirdparty import requests
+from lib.core import logger
 from lib.thirdparty.threadpool import threadpool
 from os import walk
 
@@ -129,8 +130,10 @@ class PluginManager(object):
             else:
                 if name == "URL":
                     if CurrentSet.endswith("/"):
+                        CurrentSet = CurrentSet if '://' in CurrentSet else 'http://' + CurrentSet
                         options["URL"] = CurrentSet[:-1]
                     else:
+                        CurrentSet = CurrentSet if '://' in CurrentSet else 'http://' + CurrentSet
                         options["URL"] = CurrentSet
                 elif name == "Cookie":
                     options["Cookie"] = dict(
@@ -147,6 +150,7 @@ class PluginManager(object):
                 self.cu.execute("insert into vulns values (?, ?)",
                                 (self.CurrentPlugin, vuln))
                 self.conn.commit()
+                logger.success("vuln is exist!")
                 return True, vuln
             else:
                 return False, "Exploit failed, perhaps not vulnerable?"
