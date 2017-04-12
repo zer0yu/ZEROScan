@@ -130,12 +130,8 @@ class PluginManager(object):
                 return "%s is required!" % name
             else:
                 if name == "URL":
-                    if CurrentSet.endswith("/"):
-                        CurrentSet = GetDomain(CurrentSet)
-                        options["URL"] = CurrentSet[:-1]
-                    else:
-                        CurrentSet = GetDomain(CurrentSet)
-                        options["URL"] = CurrentSet
+                    CurrentSet = GetDomain(CurrentSet)
+                    options["URL"] = CurrentSet
                 elif name == "Cookie":
                     options["Cookie"] = dict(
                         i.split("=", 1)
