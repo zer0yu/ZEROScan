@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 
 import urlparse
+from lib.core import logger
 
 def GetDomain(url):
     """
@@ -12,7 +13,12 @@ def GetDomain(url):
     'http://www.baidu.com'
     """
     u = urlparse.urlparse(url)
-    return urlparse.urlunsplit([u.scheme, u.netloc, '', '', ''])
+    u = urlparse.urlunsplit([u.scheme, u.netloc, '', '', ''])
+    if u == "":
+        logger.error("An illegal URL")
+        logger.error("Please add http or https")
+    else:
+        return u
 
 
 def IteratePath(OriStr):
