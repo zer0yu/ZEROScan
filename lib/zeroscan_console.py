@@ -6,7 +6,9 @@ import os
 import subprocess
 from lib.core import logger
 from lib.core.manager import PluginManager
+from lib.thirdparty.colorama import init,Fore
 
+init()
 
 class Interface(cmd.Cmd, PluginManager):
     """
@@ -133,8 +135,8 @@ class Interface(cmd.Cmd, PluginManager):
             except Exception:
                 logger.error("Failed to load plugin: %s" % plugin)
             if self.CurrentPlugin:
-                self.prompt = "ZEROScan exploit(%s) > " % \
-                              self.CurrentPlugin
+                self.prompt = "ZEROScan exploit({color}{content}{color_reset}) > ".format(
+                    color=Fore.RED, content=self.CurrentPlugin, color_reset=Fore.RESET)
         else:
             logger.error("use <plugin>")
 
