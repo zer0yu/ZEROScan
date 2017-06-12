@@ -86,10 +86,15 @@ class PluginManager(object):
             self.plugins[plugin] = {}
             PluginName = plugin[plugin.index("_")+1:]
             PluginDir = "modules/" + plugin[:plugin.index("_")]
-            module = load_module(PluginName,
-                                 *find_module(PluginName, [PluginDir]))
-            self.plugins[plugin]["options"] = module.options
-            self.plugins[plugin]["exploit"] = module.exploit
+            fp, pathname, description = find_module(PluginName, [PluginDir])
+            try:
+                module = load_module(PluginName,
+                                    fp, pathname, description)
+                self.plugins[plugin]["options"] = module.options
+                self.plugins[plugin]["exploit"] = module.exploit
+            except ImportError, e:
+                errorMsg = "Your current scipt [%s.py] caused this exception\n%s\n%s" \
+                   % (plugin, '[Error Msg]: ' + str(e), 'Maybe you can download this module from pip or easy_install')
         self.CurrentPlugin = plugin
 
     def ShowOptions(self):
