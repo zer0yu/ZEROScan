@@ -136,9 +136,9 @@ Author：Z3r0yu
 
 Blog：    http://zeroyu.xyz/
 
-Mail:       zeroyu@protonmail.com
+Mail:       zeroyu.xyz@gmail.com
 
-<PS:欢迎提交bug和修改建议>
+PS:此版本的ZEROScan修改自CMS-Exploit-Framework；1.0版本已经开发完成，随后测试完成后进行更新
 
 ## 更新
 
