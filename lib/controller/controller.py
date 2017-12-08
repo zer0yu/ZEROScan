@@ -23,12 +23,10 @@ from thirdparty.python_tabulate.tabulate import tabulate
 
 
 def start():
-    #kb.targets是队列
     if kb.targets and kb.targets.qsize() > 1:
         infoMsg = "ZEROScan got a total of %d targets" % kb.targets.qsize()
         log.process(infoMsg)
 
-    #多线程函数，线程数，函数
     runThreads(conf.threads, expThreads)
 
     if not kb.results:

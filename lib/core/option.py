@@ -17,15 +17,14 @@ from thirdparty.oset.pyoset import oset
 
 
 def initializeKb():
-    kb.targets = Queue.Queue()#kb.targets.put(url)入队；kb.targets.get()出队，先进先出
+    kb.targets = Queue.Queue()
     kb.exps = {}
-    kb.results = oset()#有序集合[]
+    kb.results = oset()
 
 def setMultipleTarget():
     #urlFile
     if not conf.urlFile:
         target_urls = []
-        #c段地址
         if conf.url.endswith('/24'):
             try:
                 socket.inet_aton(conf.url.split('/')[0])
@@ -42,15 +41,12 @@ def setMultipleTarget():
             if url:
                 kb.targets.put((url))
         return
-    #安全载入文件，防止出现编码错误
     conf.urlFile = safeExpandUser(conf.urlFile)
     infoMsg = "parsing multiple targets list from '%s'" % conf.urlFile
     log.process(infoMsg)
 
-    #检查编码是否错误
     if not os.path.isfile(conf.urlFile):
         errMsg = "the specified file does not exist"
         raise ZEROScanFilePathException(errMsg)
-    #将conf.urlFile路径中存储的文件读出
     for line in getFileItems(conf.urlFile):
         kb.targets.put(line.strip())

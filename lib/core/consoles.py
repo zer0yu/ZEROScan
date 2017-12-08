@@ -15,10 +15,6 @@ from thirdparty.cmd2.cmd2 import Cmd
 from lib.core.option import initializeKb
 
 def initializeExp():
-    # 加载文件夹下的poc时默认只加载plugins目录下的, plugins目录下可以新建文件夹, 如wordpress
-    # 默认情况不加载wordpress文件夹内的poc
-    # Usage: pcs-console.py plugins/wordpress tests
-    # 调用方式如上时可以将plugins/wordpress 和 tests两个文件夹下的poc导入
     expNumber = 0
     folders = []
     if not os.path.isdir(paths.ZEROSCAN_PLUGINS_PATH):
@@ -36,9 +32,6 @@ def initializeExp():
 init()
 
 class baseConsole(Cmd):
-    """
-    ZEROScan 核心类
-    """
     def __init__(self):
         Cmd.__init__(self)
         os.system("clear")
@@ -166,7 +159,6 @@ class baseConsole(Cmd):
         :param plugin: string, 插件名称
         :return:
         """
-        #在use新插件的时候要清除已经设置的变量以及结果
         initializeKb()
         ClearConf()
 
@@ -220,7 +212,6 @@ class baseConsole(Cmd):
         else:
             log.error("Select a plugin first.")
 
-#以下有关插件的执行设置，与多线程有关
     def do_set(self, arg):
         """
         设置参数

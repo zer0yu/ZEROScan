@@ -90,7 +90,6 @@ def unhandledExceptionMessage():
 def setPaths():
     """
     Sets absolute paths for project directories and files
-    初始化设置数据的绝对路径
     """
 
     paths.ZEROSCAN_PLUGINS_PATH = os.path.join(paths.ZEROSCAN_ROOT_PATH, "plugins")
@@ -103,7 +102,6 @@ def setPaths():
     paths.WEAK_PASS = os.path.join(paths.ZEROSCAN_DATA_PATH, "password-top100.txt")
     paths.LARGE_WEAK_PASS = os.path.join(paths.ZEROSCAN_DATA_PATH, "password-top1000.txt")
 
-    #此处默认将文件输出到'paths.ZEROSCAN_ROOT_PATH/output'路径下
     paths.ZEROSCAN_OUTPUT_PATH = getUnicode(paths.get("ZEROSCAN_OUTPUT_PATH", os.path.join(paths.ZEROSCAN_ROOT_PATH, "output")), encoding=sys.getfilesystemencoding())
 
 def banner():
@@ -144,7 +142,7 @@ def setColor(message, bold=False):
 
 def parseTargetUrl(url):
     """
-    Parse target URL 
+    Parse target URL
     """
     retVal = url
 
@@ -177,8 +175,7 @@ def getFileItems(filename, commentPrefix='#', unicode_=True, lowercase=False, un
     @function returns newline delimited items contained inside file
     """
 
-    retVal = list() if not unique else OrderedDict()   
-    #检查文件是否存在
+    retVal = list() if not unique else OrderedDict()
     checkFile(filename)
 
     try:

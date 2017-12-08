@@ -23,8 +23,6 @@ def ListPlugins():
     显示插件列表
     :return: list(dict) expName,appName, appVersion, description
     """
-    #source.list_plugins()可以显示所有插件的expName，
-    #对每个expName可以调用infoplugin()函数来获取appName, appVersion, description
     list_plugin_info = []
     plugin_info = {}
     zsp = PluginBase(package='zsplugins')
@@ -169,7 +167,7 @@ def ExecPlugin():
     执行插件
     :return:
     """
-    setMultipleTarget()#kb.targets.put(目标url)
+    setMultipleTarget()
     start()
 
 

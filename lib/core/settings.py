@@ -56,23 +56,6 @@ HTTP_DEFAULT_HEADER = {
 }
 
 
-PCS_OPTIONS = {
-    'threads': 1,
-    'url': None,
-    'urlFile': None,
-    'agent': None,
-    'pocFile': None,
-    'isPocString': False,
-    'pocname': None,
-    'referer': None,
-    'Mode': 'verify',
-    'cookie': None,
-    'randomAgent': False,
-    'report': None,
-    'proxy': None,
-    'proxyCred': None,
-    'timeout': 5
-}
 
 REPORT_TABLEBASE = """\
     <tbody>

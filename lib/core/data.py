@@ -4,7 +4,6 @@
 from lib.core.datatype import AttribDict
 from lib.core.defaults import defaults
 
-#以下均为全局变量，使用时只要import然后调用即可
 # object to share within function and classes command
 # line options and settings
 conf = AttribDict()
