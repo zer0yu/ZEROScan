@@ -262,16 +262,8 @@ class baseConsole(Cmd):
         更新
         :return:
         """
-        log.process("")
-        log.process("Attempting to update the ZEROScan")
-        log.process("")
-        log.process("Downloading plugin list")
-        remote_plugins = DownPluginList()
-        log.process("Getting local plugin list")
-        local_plugins = GetLocalPluginList()
-        log.process("Comparing and updating")
-        new_plugins = DownPlugins(remote_plugins, local_plugins)
-        log.success("New plugins: %s" % str(new_plugins))
+        log.warn("")
+        log.warn("you can update the ZEROScan by git")
 
     def do_back(self, line):
         """

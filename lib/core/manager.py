@@ -3,7 +3,6 @@
 
 import binascii
 import json
-import sqlite3
 import copy
 from os import walk
 
@@ -169,98 +168,3 @@ def ExecPlugin():
     """
     setMultipleTarget()
     start()
-
-
-def DownPluginList(self):
-    """
-    获取远程插件列表
-    :param dirs: 所有插件目录
-    :return: list, 远程插件列表
-    """
-    BaseUrl = "https://api.github.com/repos/zer0yu/" \
-                "ZEROScan/contents/"
-    PluginDirs = []
-    RemotePlugins = []
-
-    def DownPluginDirs():
-        """
-        获取远程插件目录
-        :return:
-        """
-        r = requests.get(BaseUrl+"modules")
-        r.close()
-        j = json.loads(r.text)
-        for i in j:
-            PluginDirs.append(i["path"])
-
-    def DownSingleDir(PluginDir):
-        """
-        下载单个目录插件列表
-        :param plugin_dir: list, 插件目录
-        """
-        RemotePlugins = []
-        r = requests.get(BaseUrl+PluginDir)
-        r.close()
-        j = json.loads(r.text)
-        for i in j:
-            RemotePlugins.append(i["path"])
-        return RemotePlugins
-
-    def log(request, result):
-        """
-        threadpool callback
-        """
-        RemotePlugins.extend(result)
-
-    DownPluginDirs()
-    pool = threadpool.ThreadPool(10)
-    reqs = threadpool.makeRequests(DownSingleDir, PluginDirs, log)
-    for req in reqs:
-        pool.putRequest(req)
-    pool.wait()
-    return RemotePlugins
-
-def GetLocalPluginList(self):
-    """
-    获取本地插件列表
-    :return:
-    """
-    LocalPlugins = []
-    for dirpath, dirnames, filenames in walk("modules/"):
-        if dirpath == "modules/":
-            continue
-        for fn in filenames:
-            if fn.endswith(".py"):
-                LocalPlugins.append(dirpath+"/"+fn)
-    return LocalPlugins
-
-def DownPlugins(self, RemotePlugins, LocalPlugins):
-    """
-    下载插件
-    :param RemotePlugins: list, 远程插件列表
-    :param LocalPlugins: list, 本地插件列表
-    :return: list, 新增插件列表
-    """
-    def down_single_plugin(plugin):
-        """
-        下载单个插件
-        :return:
-        """
-        BaseUrl = "https://api.github.com/repos/zer0yu/" \
-                    "ZEROScan/contents/"
-        r = requests.get(BaseUrl+plugin)
-        r.close()
-        j = json.loads(r.text)
-        data = binascii.a2b_base64(j["content"])
-        with open(plugin, "w") as f:
-            f.write(data)
-
-    for plugin in LocalPlugins:
-        if plugin in RemotePlugins:
-            RemotePlugins.remove(plugin)
-    pool = threadpool.ThreadPool(10)
-    reqs = threadpool.makeRequests(down_single_plugin, RemotePlugins)
-    for req in reqs:
-        pool.putRequest(req)
-    pool.wait()
-    return RemotePlugins
