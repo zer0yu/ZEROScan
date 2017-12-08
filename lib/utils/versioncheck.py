@@ -3,7 +3,6 @@
 
 import sys
 
-#检查系统python的版本
 PYVERSION = sys.version.split()[0]
 
 if PYVERSION >= "3" or PYVERSION < "2.6":

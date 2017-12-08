@@ -1,49 +1,46 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-class ToolkitBaseException(Exception):
+
+class ZEROScanBaseException(Exception):
     pass
 
 
-class ToolkitConnectionException(Exception):
+class ZEROScanUserQuitException(ZEROScanBaseException):
     pass
 
 
-class ToolkitDataException(ToolkitBaseException):
+class ZEROScanDataException(ZEROScanBaseException):
     pass
 
 
-class ToolkitMissingPrivileges(ToolkitBaseException):
+class ZEROScanGenericException(ZEROScanBaseException):
     pass
 
 
-class ToolkitUserQuitException(ToolkitBaseException):
+class ZEROScanSystemException(ZEROScanBaseException):
     pass
 
 
-class ToolkitSystemException(ToolkitBaseException):
+class ZEROScanFilePathException(ZEROScanBaseException):
     pass
 
 
-class ToolkitValueException(ToolkitBaseException):
+class ZEROScanConnectionException(ZEROScanBaseException):
     pass
 
 
-class ToolkitPluginException(ToolkitBaseException):
+class ZEROScanThreadException(ZEROScanBaseException):
     pass
 
 
-class RegisterException(Exception):
+class ZEROScanValueException(ZEROScanBaseException):
     pass
 
 
-class RegisterValueException(RegisterException):
+class ZEROScanMissingPrivileges(ZEROScanBaseException):
     pass
 
 
-class RegisterDataException(RegisterException):
-    pass
-
-
-class RegisterMutexException(RegisterException):
+class ZEROScanSyntaxException(ZEROScanBaseException):
     pass

@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import copy
 import types
-from lib.core.exception import ToolkitDataException
+
+from lib.core.exception import ZEROScanDataException
+
 
 class AttribDict(dict):
-    """
-    This class defines the project object, inheriting from Python data
-    type dictionary.
 
+    """
     >>> foo = AttribDict()
     >>> foo.bar = 1
     >>> foo.bar
@@ -38,7 +38,7 @@ class AttribDict(dict):
         try:
             return self.__getitem__(item)
         except KeyError:
-            raise ToolkitDataException("unable to access item '%s'" % item)
+            raise ZEROScanDataException("unable to access item '%s'" % item)
 
     def __setattr__(self, item, value):
         """

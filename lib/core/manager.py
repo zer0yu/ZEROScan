@@ -4,305 +4,265 @@
 import binascii
 import json
 import sqlite3
-from imp import find_module, load_module
-from lib.thirdparty import requests
-from lib.core import logger
-from lib.thirdparty.threadpool import threadpool
-from lib.plugins.urlparser import *
+import copy
 from os import walk
 
+from lib.core import log
+from lib.core.data import kb
+from lib.core.data import conf
+from lib.core.common import paths
+from lib.core.pluginbase import PluginBase
+from lib.controller.controller import start
+from lib.core.option import setMultipleTarget
+from lib.core.option import initializeKb
+from thirdparty import requests
 
-class PluginManager(object):
+
+def ListPlugins():
     """
-    插件管理器
+    显示插件列表
+    :return: list(dict) expName,appName, appVersion, description
     """
-    def __init__(self):
-        self.plugins = {}
-        self.conn = sqlite3.connect("lib/core/core.db")
-        self.conn.text_factory = str
-        self.cu = self.conn.cursor()
-        self.CurrentPlugin = ""
+    #source.list_plugins()可以显示所有插件的expName，
+    #对每个expName可以调用infoplugin()函数来获取appName, appVersion, description
+    list_plugin_info = []
+    plugin_info = {}
+    zsp = PluginBase(package='zsplugins')
+    plugin_zsp = zsp.make_plugin_source(searchpath=[paths.ZEROSCAN_PLUGINS_PATH])
+    expNames = plugin_zsp.list_plugins()
+    for expName in expNames:
+        plugin_tmp = InfoPlugin(expName)
+        plugin_info["expName"] = expName
+        plugin_info["appName"] = plugin_tmp["appName"]
+        plugin_info["appVersion"] = plugin_tmp["appVersion"]
+        plugin_info["description"] = plugin_tmp["description"]
+        pi_tmp = copy.deepcopy(plugin_info)#python的优化造成必须使用deepcopy
+        list_plugin_info.append(pi_tmp)
+    return list_plugin_info
 
-    def version(self):
-        """
-        插件库版本
-        :return: string, 插件库版本
-        """
-        self.cu.execute("select version from core")
-        return self.cu.fetchone()[0]
 
-    def CMSNum(self):
-        """
-        查询 CMS 数量
-        :return: int, CMS 数量
-        """
-        self.cu.execute("select cms from modules")
-        return len(set(self.cu.fetchall()))
+def SearchPlugin(keyword):
+    """
+    搜索插件
+    :param keyword: string, 插件信息
+    :return: list, 插件列表
+    """
+    return_list = []
+    plugin_info = {}
+    zsp = PluginBase(package='zsplugins')
+    plugin_zsp = zsp.make_plugin_source(searchpath=[paths.ZEROSCAN_PLUGINS_PATH])
+    expNames = plugin_zsp.list_plugins()
+    for expName in expNames:
+        if keyword in expName:
+            plugin_tmp = InfoPlugin(expName)
+            plugin_info["expName"] = expName
+            plugin_info["appName"] = plugin_tmp["appName"]
+            plugin_info["appVersion"] = plugin_tmp["appVersion"]
+            plugin_info["description"] = plugin_tmp["description"]
+            pi_tmp = copy.deepcopy(plugin_info)#python的优化造成必须使用deepcopy
+            return_list.append(pi_tmp)
+    return return_list
 
-    def PluginsNum(self):
-        """
-        查询插件数量
-        :return: int, 插件数量
-        """
-        self.cu.execute("select count(*) from modules")
-        return self.cu.fetchone()[0]
+def InfoPlugin(plugin):
+    """
+    显示插件信息
+    :param plugin: string, 插件名
+    :return: dict, 所有的插件信息
+    """
+    zsp = PluginBase(package='zsplugins')
+    plugin_zsp = zsp.make_plugin_source(searchpath=[paths.ZEROSCAN_PLUGINS_PATH])
+    zspi = plugin_zsp.load_plugin('%s'%plugin)
+    zspi_tmp = zspi.expInfo()
+    return zspi_tmp
 
-    def ListPlugins(self):
-        """
-        显示插件列表
-        :return: list, 插件列表
-        """
-        self.cu.execute("select name, scope, description from modules")
-        return self.cu.fetchall()
 
-    def SearchPlugin(self, keyword):
-        """
-        搜索插件
-        :param keyword: string, 插件信息
-        :return: list, 插件列表
-        """
-        keyword = "%" + keyword + "%"
-        self.cu.execute("select name, scope, description from modules where "
-                        "name like ? or description like ?", (keyword, keyword))
-        return self.cu.fetchall()
+def ShowOptions():
+    """
+    显示插件设置项
+    kb.CurrentPlugin
+    :return:插件的options
+    """
+    zspi_to_re = []
+    zspi_dict_tmp = {}
+    zsp = PluginBase(package='zsplugins')
+    plugin_zsp = zsp.make_plugin_source(searchpath=[paths.ZEROSCAN_PLUGINS_PATH])
+    zspi = plugin_zsp.load_plugin('%s'%(kb.CurrentPlugin))
+    zspi_tmp = zspi.expInfo()
+    for list_tmp in zspi_tmp["options"]:
+        if list_tmp["Name"] == "URL":
+            if conf.url:
+                zspi_dict_tmp["Name"] = "URL"
+                zspi_dict_tmp["Current Setting"] = conf.url
+                zspi_dict_tmp["Required"] = True
+                zspi_dict_tmp["Description"] = "URL or URL file"
+            elif conf.urlFile:
+                zspi_dict_tmp["Name"] = "URL"
+                zspi_dict_tmp["Current Setting"] = conf.urlFile
+                zspi_dict_tmp["Required"] = True
+                zspi_dict_tmp["Description"] = "URL or URL file"
+            else:
+                zspi_dict_tmp["Name"] = "URL"
+                zspi_dict_tmp["Current Setting"] = ""
+                zspi_dict_tmp["Required"] = True
+                zspi_dict_tmp["Description"] = "URL or URL file"
+        if list_tmp["Name"] == "Thread":
+            zspi_dict_tmp["Name"] = "Thread"
+            zspi_dict_tmp["Current Setting"] = conf.threads
+            zspi_dict_tmp["Required"] = False
+            zspi_dict_tmp["Description"] = "Threads"
+        if list_tmp["Name"] == "Cookie":
+            zspi_dict_tmp["Name"] = "Cookie"
+            zspi_dict_tmp["Current Setting"] = conf.cookie
+            zspi_dict_tmp["Required"] = False
+            zspi_dict_tmp["Description"] = "Cookie"
+        if list_tmp["Name"] == "Report":
+            zspi_dict_tmp["Name"] = "Report"
+            zspi_dict_tmp["Current Setting"] = conf.report
+            zspi_dict_tmp["Required"] = False
+            zspi_dict_tmp["Description"] = "do you need a html report?"
+        _=copy.deepcopy(zspi_dict_tmp)
+        zspi_to_re.append(_)
+    return zspi_to_re
 
-    def InfoPlugin(self, plugin):
-        """
-        显示插件信息
-        :param plugin: string, 插件名
-        :return: string, 插件信息
-        """
-        self.cu.execute("select name, author, cms, scope, description, "
-                        "reference from modules where name=?", (plugin,))
-        return self.cu.fetchone()
-
-    def LoadPlugin(self, plugin):
-        """
-        加载插件
-        :param plugin: string, 插件名
-        :return:
-        """
-        if plugin not in self.plugins:
-            self.plugins[plugin] = {}
-            PluginName = plugin[plugin.index("_")+1:]
-            PluginDir = "modules/" + plugin[:plugin.index("_")]
-            fp, pathname, description = find_module(PluginName, [PluginDir])
-            try:
-                module = load_module(PluginName,
-                                    fp, pathname, description)
-                self.plugins[plugin]["options"] = module.options
-                self.plugins[plugin]["exploit"] = module.exploit
-            except ImportError, e:
-                errorMsg = "Your current scipt [%s.py] caused this exception\n%s\n%s" \
-                   % (plugin, '[Error Msg]: ' + str(e), 'Maybe you can download this module from pip or easy_install')
-        self.CurrentPlugin = plugin
-
-    def ShowOptions(self):
-        """
-        显示插件设置项
-        :return:
-        """
-        return self.plugins[self.CurrentPlugin]["options"]
-
-    def SetOption(self, option, value):
-        """
-        设置插件选项
-        :param option: string, 设置项名称
-        :param value: string, 设置值
-        :return:
-        """
-        for op in self.plugins[self.CurrentPlugin]["options"]:
-            if op["Name"] == option:
-                op["Current Setting"] = value
-                return "%s => %s" % (op["Name"], value)
-                break
+def SetOption(option, value):
+    """
+    设置插件选项
+    :param option: string, 设置项名称
+    :param value: string, 设置值
+    :return:
+    """
+    #TODO
+    #目标如果在文件中，必须将文件放在targets目录下
+    if option.upper() == "URL":
+        if "targets" in option:
+            conf.urlFile = str(value)
+            return "%s => %s" % (option, value)
         else:
-            return "Invalid option: %s" % option
+            #这个是要check的
+            conf.url = str(value)
+            return "%s => %s" % (option, value)
+    elif option == "Thread":
+        conf.threads = value
+        return "%s => %s" % (option, value)
+    elif option == "Cookie":
+        conf.cookie = str(value)
+        return "%s => %s" % (option, value)
+    elif option == "Report":
+        conf.report = value
+        return "%s => %s" % (option, value)
+    else:
+        return "Invalid option: %s" % option
 
-    def ExecPlugin(self):
+def ClearConf():
+    """
+    清除变量
+    :return:
+    """
+    conf.urlFile = ""
+    conf.url = ""
+    conf.threads = 1
+    conf.cookie = ""
+    conf.report = False
+
+def ExecPlugin():
+    """
+    执行插件
+    :return:
+    """
+    setMultipleTarget()#kb.targets.put(目标url)
+    start()
+
+
+def DownPluginList(self):
+    """
+    获取远程插件列表
+    :param dirs: 所有插件目录
+    :return: list, 远程插件列表
+    """
+    BaseUrl = "https://api.github.com/repos/zer0yu/" \
+                "ZEROScan/contents/"
+    PluginDirs = []
+    RemotePlugins = []
+
+    def DownPluginDirs():
         """
-        执行插件
+        获取远程插件目录
         :return:
         """
-        #exp中的options
-        options = {}
-        for option in self.plugins[self.CurrentPlugin]["options"]:
-            #这里的name可以是cookie，url，thread
-            name = option["Name"]
-            CurrentSet = option["Current Setting"]
-            required = option["Required"]
-            if required and not CurrentSet:
-                return "%s is required!" % name
-            else:
-                if name == "URL":
-                    CurrentSet = GetDomain(CurrentSet)
-                    options["URL"] = CurrentSet
-                elif name == "Cookie":
-                    options["Cookie"] = dict(
-                        i.split("=", 1)
-                        for i in CurrentSet.split("; ")
-                    )
-                elif name == "Thread":
-                    options["Thread"] = int(CurrentSet)
-                else:
-                    options[name] = CurrentSet
-        try:
-            vuln = self.plugins[self.CurrentPlugin]["exploit"](**options)
-            if vuln:
-                self.cu.execute("insert into vulns values (?, ?)",
-                                (self.CurrentPlugin, vuln))
-                self.conn.commit()
-                logger.success("vuln is exist!")
-                return True, vuln
-            else:
-                return False, "Exploit failed, perhaps not vulnerable?"
-        except sqlite3.ProgrammingError:
-            return True, vuln
-        except Exception, e:
-            return False, "%s: %s" % (self.CurrentPlugin, e.message)
+        r = requests.get(BaseUrl+"modules")
+        r.close()
+        j = json.loads(r.text)
+        for i in j:
+            PluginDirs.append(i["path"])
 
-    def ShowVulns(self):
+    def DownSingleDir(PluginDir):
         """
-        显示当前漏洞信息
+        下载单个目录插件列表
+        :param plugin_dir: list, 插件目录
+        """
+        RemotePlugins = []
+        r = requests.get(BaseUrl+PluginDir)
+        r.close()
+        j = json.loads(r.text)
+        for i in j:
+            RemotePlugins.append(i["path"])
+        return RemotePlugins
+
+    def log(request, result):
+        """
+        threadpool callback
+        """
+        RemotePlugins.extend(result)
+
+    DownPluginDirs()
+    pool = threadpool.ThreadPool(10)
+    reqs = threadpool.makeRequests(DownSingleDir, PluginDirs, log)
+    for req in reqs:
+        pool.putRequest(req)
+    pool.wait()
+    return RemotePlugins
+
+def GetLocalPluginList(self):
+    """
+    获取本地插件列表
+    :return:
+    """
+    LocalPlugins = []
+    for dirpath, dirnames, filenames in walk("modules/"):
+        if dirpath == "modules/":
+            continue
+        for fn in filenames:
+            if fn.endswith(".py"):
+                LocalPlugins.append(dirpath+"/"+fn)
+    return LocalPlugins
+
+def DownPlugins(self, RemotePlugins, LocalPlugins):
+    """
+    下载插件
+    :param RemotePlugins: list, 远程插件列表
+    :param LocalPlugins: list, 本地插件列表
+    :return: list, 新增插件列表
+    """
+    def down_single_plugin(plugin):
+        """
+        下载单个插件
         :return:
-        """
-        self.cu.execute("select plugin, vuln from vulns")
-        return self.cu.fetchall()
-
-    def ClearVulns(self):
-        """
-        清空漏洞信息
-        :return:
-        """
-        self.cu.execute("delete from vulns")
-        self.conn.commit()
-
-    def DBRebuild(self):
-        """
-        重建数据库
-        :return:
-        """
-        self.cu.execute("delete from modules")
-        self.conn.commit()
-        for dirpath, dirnames, filenames in walk("modules/"):
-            if dirpath == "modules/":
-                continue
-            db = {
-                "cms": dirpath.split("/")[1],
-                "modules": []
-            }
-            for fn in filenames:
-                if fn.endswith("py"):
-                    db["modules"].append(fn.split(".")[0])
-            for module in db["modules"]:
-                p = load_module(module, *find_module(module, [dirpath]))
-                name = db["cms"] + "_" + module
-                author = p.author
-                scope = p.scope
-                description = p.description
-                reference = p.reference
-                self.cu.execute("insert into modules values (?, ?, ?, ?, ?, ?)",
-                                (name, author, db["cms"], scope, description,
-                                 reference))
-                self.conn.commit()
-
-    def DownPluginList(self):
-        """
-        获取远程插件列表
-        :param dirs: 所有插件目录
-        :return: list, 远程插件列表
         """
         BaseUrl = "https://api.github.com/repos/zer0yu/" \
-                   "ZEROScan/contents/"
-        PluginDirs = []
-        RemotePlugins = []
+                    "ZEROScan/contents/"
+        r = requests.get(BaseUrl+plugin)
+        r.close()
+        j = json.loads(r.text)
+        data = binascii.a2b_base64(j["content"])
+        with open(plugin, "w") as f:
+            f.write(data)
 
-        def DownPluginDirs():
-            """
-            获取远程插件目录
-            :return:
-            """
-            r = requests.get(BaseUrl+"modules")
-            r.close()
-            j = json.loads(r.text)
-            for i in j:
-                PluginDirs.append(i["path"])
-
-        def DownSingleDir(PluginDir):
-            """
-            下载单个目录插件列表
-            :param plugin_dir: list, 插件目录
-            """
-            RemotePlugins = []
-            r = requests.get(BaseUrl+PluginDir)
-            r.close()
-            j = json.loads(r.text)
-            for i in j:
-                RemotePlugins.append(i["path"])
-            return RemotePlugins
-
-        def log(request, result):
-            """
-            threadpool callback
-            """
-            RemotePlugins.extend(result)
-
-        DownPluginDirs()
-        pool = threadpool.ThreadPool(10)
-        reqs = threadpool.makeRequests(DownSingleDir, PluginDirs, log)
-        for req in reqs:
-            pool.putRequest(req)
-        pool.wait()
-        return RemotePlugins
-
-    def GetLocalPluginList(self):
-        """
-        获取本地插件列表
-        :return:
-        """
-        LocalPlugins = []
-        for dirpath, dirnames, filenames in walk("modules/"):
-            if dirpath == "modules/":
-                continue
-            for fn in filenames:
-                if fn.endswith(".py"):
-                    LocalPlugins.append(dirpath+"/"+fn)
-        return LocalPlugins
-
-    def DownPlugins(self, RemotePlugins, LocalPlugins):
-        """
-        下载插件
-        :param RemotePlugins: list, 远程插件列表
-        :param LocalPlugins: list, 本地插件列表
-        :return: list, 新增插件列表
-        """
-        def down_single_plugin(plugin):
-            """
-            下载单个插件
-            :return:
-            """
-            BaseUrl = "https://api.github.com/repos/zer0yu/" \
-                       "ZEROScan/contents/"
-            r = requests.get(BaseUrl+plugin)
-            r.close()
-            j = json.loads(r.text)
-            data = binascii.a2b_base64(j["content"])
-            with open(plugin, "w") as f:
-                f.write(data)
-
-        for plugin in LocalPlugins:
-            if plugin in RemotePlugins:
-                RemotePlugins.remove(plugin)
-        pool = threadpool.ThreadPool(10)
-        reqs = threadpool.makeRequests(down_single_plugin, RemotePlugins)
-        for req in reqs:
-            pool.putRequest(req)
-        pool.wait()
-        return RemotePlugins
-
-    def Exit(self):
-        """
-        退出插件管理器
-        :return:
-        """
-        self.conn.close()
+    for plugin in LocalPlugins:
+        if plugin in RemotePlugins:
+            RemotePlugins.remove(plugin)
+    pool = threadpool.ThreadPool(10)
+    reqs = threadpool.makeRequests(down_single_plugin, RemotePlugins)
+    for req in reqs:
+        pool.putRequest(req)
+    pool.wait()
+    return RemotePlugins
