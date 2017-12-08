@@ -10,11 +10,17 @@ from lib.core.common import banner
 from lib.core.settings import HTTP_DEFAULT_HEADER,VERSION
 from lib.core import log
 from lib.core.manager import *
-from thirdparty.colorama import init,Fore
-from thirdparty.cmd2.cmd2 import Cmd
 from lib.core.option import initializeKb
+from thirdparty.colorama import init,Fore
+from thirdparty.python_tabulate.tabulate import tabulate
+from thirdparty.cmd2.cmd2 import Cmd
+
 
 def initializeExp():
+    # 加载文件夹下的poc时默认只加载plugins目录下的, plugins目录下可以新建文件夹, 如wordpress
+    # 默认情况不加载wordpress文件夹内的poc
+    # Usage: pcs-console.py plugins/wordpress tests
+    # 调用方式如上时可以将plugins/wordpress 和 tests两个文件夹下的poc导入
     expNumber = 0
     folders = []
     if not os.path.isdir(paths.ZEROSCAN_PLUGINS_PATH):
@@ -32,6 +38,9 @@ def initializeExp():
 init()
 
 class baseConsole(Cmd):
+    """
+    ZEROScan 核心类
+    """
     def __init__(self):
         Cmd.__init__(self)
         os.system("clear")
@@ -93,13 +102,18 @@ class baseConsole(Cmd):
         插件列表
         :return:
         """
-        print "\Modules\n=======\n"
-        print "%-40s%-40s%-40s%s" % ("expName","appName", "appVersion", "description")
-        print "%-40s%-40s%-40s%s" % ("-------", "-------", "----------","-----------")
+        l_ist = []
+        l_tmp = []
+        l_ist.append(list(("expName","appName", "appVersion", "description")))
         for ListPlugin in ListPlugins():
-            print "%-40s%-40s%-40s%s" % (ListPlugin["expName"],ListPlugin["appName"], \
-                                        ListPlugin["appVersion"], ListPlugin["description"])
-        print
+            l_tmp.append(ListPlugin["expName"])
+            l_tmp.append(ListPlugin["appName"])
+            l_tmp.append(ListPlugin["appVersion"])
+            l_tmp.append(ListPlugin["description"])
+            l_ist.append(l_tmp)
+            l_tmp = []
+        print "\Modules\n=======\n"
+        print(tabulate(l_ist,headers="firstrow"))
 
     def do_search(self, keyword):
         """
@@ -108,12 +122,18 @@ class baseConsole(Cmd):
         :return:
         """
         if keyword:
-            print "\nMatching Modules\n================\n"
-            print "%-40s%-40s%-40s%s" % ("expName","appName", "appVersion", "description")
-            print "%-40s%-40s%-40s%s" % ("-------", "-------", "----------","-----------")
+            l_ist = []
+            l_tmp = []
+            l_ist.append(list(("expName","appName", "appVersion", "description")))
             for ListPlugin in SearchPlugin(keyword):
-                print "%-40s%-40s%-40s%s" % (ListPlugin["expName"],ListPlugin["appName"], \
-                                        ListPlugin["appVersion"], ListPlugin["description"])
+                l_tmp.append(ListPlugin["expName"])
+                l_tmp.append(ListPlugin["appName"])
+                l_tmp.append(ListPlugin["appVersion"])
+                l_tmp.append(ListPlugin["description"])
+                l_ist.append(l_tmp)
+                l_tmp = []
+            print "\nMatching Modules\n================\n"
+            print(tabulate(l_ist,headers="firstrow"))
         else:
             log.error("search <keyword>")
 
@@ -124,9 +144,9 @@ class baseConsole(Cmd):
         :return: 插件信息
         """
         if not plugin:
-            if kb.CurrentPlugin:
+            try:
                 plugin = kb.CurrentPlugin
-            else:
+            except:
                 log.error("info <plugin>")
                 return
         if InfoPlugin(plugin):
@@ -159,6 +179,7 @@ class baseConsole(Cmd):
         :param plugin: string, 插件名称
         :return:
         """
+        #在use新插件的时候要清除已经设置的变量以及结果
         initializeKb()
         ClearConf()
 
@@ -194,24 +215,29 @@ class baseConsole(Cmd):
         插件设置项
         :return:
         """
-        if kb.CurrentPlugin:
-            rn = ShowOptions()
+
+        try:
+            if kb.CurrentPlugin:
+                rn = ShowOptions()
             if isinstance(rn, str):
                 log.error(rn)
             else:
-                print "\n\t%-20s%-40s%-10s%s" % ("Name", "Current Setting",
-                                                 "Required", "Description")
-                print "\t%-20s%-40s%-10s%s" % ("----", "---------------",
-                                               "--------", "-----------")
+                l_ist = []
+                l_tmp = []
+                l_ist.append(list(("Name","Current Setting", "Required", "Description")))
                 for option in rn:
-                    print "\t%-20s%-40s%-10s%s" % (option["Name"],
-                                                   option["Current Setting"],
-                                                   option["Required"],
-                                                   option["Description"])
+                    l_tmp.append(option["Name"])
+                    l_tmp.append(option["Current Setting"])
+                    l_tmp.append(option["Required"])
+                    l_tmp.append(option["Description"])
+                    l_ist.append(l_tmp)
+                    l_tmp = []
                 print
-        else:
+                print(tabulate(l_ist,headers="firstrow"))
+        except:
             log.error("Select a plugin first.")
 
+#以下有关插件的执行设置，与多线程有关
     def do_set(self, arg):
         """
         设置参数
