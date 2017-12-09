@@ -2,16 +2,15 @@
 # -*- coding:utf-8 -*-
 
 import re
-
 from lib.core import log
 
 def expInfo():
     expInfo={}
     expInfo["appName"] = "PHP"
-    expInfo["appVersion"] = "1230"
-    expInfo["author"] = "123"
-    expInfo["description"] = "PH1424/down.php SQL Injection"
-    expInfo["references"] = "http://124.xyz/"
+    expInfo["appVersion"] = "123"
+    expInfo["author"] = "Z3r0yu"
+    expInfo["description"] = "PHPxxx/down.php SQL Injection"
+    expInfo["references"] = "http://zeroyu.xyz/"
 
     expInfo["options"] = [
         {
