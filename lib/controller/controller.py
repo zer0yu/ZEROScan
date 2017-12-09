@@ -13,6 +13,7 @@ from lib.core.exception import ZEROScanMissingPrivileges
 from lib.core.common import getUnicode
 from lib.core.common import reIndent
 from lib.core.common import normalizeUnicode
+from lib.core.common import parseTargetUrl
 from lib.core import log
 from lib.core.data import conf
 from lib.core.data import kb
@@ -62,6 +63,7 @@ def expThreads():
         infoMsg = "exploit target:'%s'" % (target)
         log.process(infoMsg)
         # TODO
+        target = parseTargetUrl(target)
         result = zspi.exploit(target, headers=conf.httpHeaders)
         #插件中没有返回值就默认是失败
         if not result:
