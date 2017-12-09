@@ -74,10 +74,11 @@ Reference:
 ZEROScan > use demo
 #使用options命令来查看此插件需要设置的对应项
 ZEROScan exploit(demo) > options
-
+#批量扫描的文件需要放置于target目录下
+#批量扫描的文件暂时只能使用绝对路径
 Name    Current Setting      Required  Description
 ------  -----------------  ----------  --------------------------
-URL                                 1  URL or URL file#批量扫描的文件需要放置于target目录下
+URL                                 1  URL or URL file
 Thread  1                           0  Threads
 Cookie                              0  Cookie
 Report  False                       0  do you need a html report?
