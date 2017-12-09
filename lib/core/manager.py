@@ -131,7 +131,7 @@ def SetOption(option, value):
     #TODO
     #目标如果在文件中，必须将文件放在targets目录下
     if option.upper() == "URL":
-        if "targets" in option:
+        if "targets" in str(value):
             conf.urlFile = str(value)
             return "%s => %s" % (option, value)
         else:
