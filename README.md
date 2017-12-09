@@ -160,7 +160,7 @@ def exploit(target, headers=None):
     return yourDefinition()
 ```
 
-##更新日志
+## 更新日志
 
 - v1.0.0
   - 优化了整体的结构
