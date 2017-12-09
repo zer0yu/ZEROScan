@@ -19,7 +19,7 @@ from thirdparty import requests
 
 def ListPlugins():
     """
-    显示插件列表
+    @function show all plugins
     :return: list(dict) expName,appName, appVersion, description
     """
     list_plugin_info = []
@@ -40,7 +40,7 @@ def ListPlugins():
 
 def SearchPlugin(keyword):
     """
-    搜索插件
+    @function search plugins
     :param keyword: string, 插件信息
     :return: list, 插件列表
     """
@@ -62,7 +62,7 @@ def SearchPlugin(keyword):
 
 def InfoPlugin(plugin):
     """
-    显示插件信息
+    @function show the plugin infomations
     :param plugin: string, 插件名
     :return: dict, 所有的插件信息
     """
@@ -75,8 +75,7 @@ def InfoPlugin(plugin):
 
 def ShowOptions():
     """
-    显示插件设置项
-    kb.CurrentPlugin
+    @function show the plugin options
     :return:插件的options
     """
     zspi_to_re = []
@@ -123,7 +122,7 @@ def ShowOptions():
 
 def SetOption(option, value):
     """
-    设置插件选项
+    @function set the plugin options
     :param option: string, 设置项名称
     :param value: string, 设置值
     :return:
@@ -152,7 +151,7 @@ def SetOption(option, value):
 
 def ClearConf():
     """
-    清除变量
+    @function clear var
     :return:
     """
     conf.urlFile = ""
@@ -163,7 +162,7 @@ def ClearConf():
 
 def ExecPlugin():
     """
-    执行插件
+    @function exec the plugin
     :return:
     """
     setMultipleTarget()
