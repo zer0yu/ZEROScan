@@ -63,7 +63,6 @@ def expThreads():
         infoMsg = "exploit target:'%s'" % (target)
         log.process(infoMsg)
         # TODO
-        target = parseTargetUrl(target)
         result = zspi.exploit(target, headers=conf.httpHeaders)
         #插件中没有返回值就默认是失败
         if not result:
