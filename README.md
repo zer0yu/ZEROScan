@@ -170,3 +170,7 @@ def exploit(target, headers=None):
 ## 联系作者
 
 - mail:zeroyu.xyz@gmail.com
+
+## 声明
+
+本软件仅供学习交流使用，请勿用于非法用途，否则造成的后果于作者无关。
