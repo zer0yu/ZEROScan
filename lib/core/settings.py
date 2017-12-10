@@ -8,7 +8,7 @@ import sys
 
 from lib.core.revision import getRevisionNumber
 
-VERSION = "1.0.0dev"
+VERSION = "1.0dev"
 REVISION = getRevisionNumber()
 VERSION_STRING = "zerosacn/%s%s" % (VERSION, "-%s" % REVISION if REVISION else "-nongit-%s" % time.strftime("%Y%m%d", time.gmtime(os.path.getctime(__file__))))
 

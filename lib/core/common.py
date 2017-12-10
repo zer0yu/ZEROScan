@@ -4,18 +4,12 @@
 import os
 import re
 import sys
-import imp
-import ntpath
 import inspect
-import posixpath
-import marshal
 import unicodedata
 from lib.core.settings import UNICODE_ENCODING, INVALID_UNICODE_CHAR_FORMAT
 from lib.core.settings import (BANNER, GIT_PAGE, ISSUES_PAGE, PLATFORM, PYVERSION, VERSION_STRING)
-from lib.core.settings import UNICODE_ENCODING, INVALID_UNICODE_CHAR_FORMAT
 from lib.core.data import paths
 from lib.core.convert import stdoutencode
-from lib.core.exception import ZEROScanGenericException
 from lib.core.exception import ZEROScanSystemException
 from thirdparty.termcolor.termcolor import colored
 from thirdparty.odict.odict import OrderedDict
@@ -137,20 +131,6 @@ def setColor(message, bold=False):
     if message:
         if bold:
             retVal = colored(message, color=None, on_color=None, attrs=("bold",))
-
-    return retVal
-
-def parseTargetUrl(url):
-    """
-    Parse target URL
-    """
-    retVal = url
-
-    if not re.search("^http[s]*://", retVal, re.I) and not re.search("^ws[s]*://", retVal, re.I):
-        if re.search(":443[/]*$", retVal):
-            retVal = "https://" + retVal
-        else:
-            retVal = "http://" + retVal
 
     return retVal
 

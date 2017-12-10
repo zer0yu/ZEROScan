@@ -1,18 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-class CUSTOM_LOGGING:
-    SYSINFO = 9
-    SUCCESS = 8
-    ERROR = 7
-    WARNING = 6
-
-
-class OUTPUT_STATUS:
-    SUCCESS = 1
-    FAILED = 0
-
-
 class HTTP_HEADER:
     ACCEPT = "Accept"
     ACCEPT_CHARSET = "Accept-Charset"
@@ -39,10 +27,3 @@ class HTTP_HEADER:
     TRANSFER_ENCODING = "Transfer-Encoding"
     URI = "URI"
     VIA = "Via"
-
-
-class PROXY_TYPE:
-    HTTP = "HTTP"
-    HTTPS = "HTTPS"
-    SOCKS4 = "SOCKS4"
-    SOCKS5 = "SOCKS5"

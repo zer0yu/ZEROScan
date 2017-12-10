@@ -13,11 +13,9 @@ from lib.core.exception import ZEROScanMissingPrivileges
 from lib.core.common import getUnicode
 from lib.core.common import reIndent
 from lib.core.common import normalizeUnicode
-from lib.core.common import parseTargetUrl
 from lib.core import log
 from lib.core.data import conf
 from lib.core.data import kb
-from lib.core.enums import CUSTOM_LOGGING
 from lib.core.threads import runThreads
 from lib.core.pluginbase import PluginBase
 from thirdparty.python_tabulate.tabulate import tabulate

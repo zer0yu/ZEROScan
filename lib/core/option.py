@@ -10,9 +10,7 @@ from lib.core.data import conf
 from lib.core import log
 from lib.core.common import getFileItems
 from lib.core.common import safeExpandUser
-from lib.core.common import getPublicTypeMembers
 from lib.core.exception import ZEROScanFilePathException
-from lib.core.exception import ZEROScanSyntaxException
 from thirdparty.oset.pyoset import oset
 
 

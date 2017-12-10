@@ -1,20 +1,14 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
-import binascii
-import json
 import copy
-from os import walk
 
-from lib.core import log
 from lib.core.data import kb
 from lib.core.data import conf
 from lib.core.common import paths
 from lib.core.pluginbase import PluginBase
 from lib.controller.controller import start
 from lib.core.option import setMultipleTarget
-from lib.core.option import initializeKb
-from thirdparty import requests
 
 
 def ListPlugins():
