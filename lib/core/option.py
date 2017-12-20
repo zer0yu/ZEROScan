@@ -23,22 +23,27 @@ def setMultipleTarget():
     #urlFile
     if not conf.urlFile:
         target_urls = []
-        if conf.url.endswith('/24'):
-            try:
-                socket.inet_aton(conf.url.split('/')[0])
-                base_addr = conf.url[:conf.url.rfind('.') + 1]
-                target_urls = ['{}{}'.format(base_addr, i)
-                                for i in xrange(1, 255 + 1)]
-            except socket.error:
-                errMsg = 'only id address acceptable'
-                log.error(errMsg)
-        else:
-            target_urls = conf.url.split(',')
+        if conf.url:
+            if conf.url.endswith('/24'):
+                try:
+                    socket.inet_aton(conf.url.split('/')[0])
+                    base_addr = conf.url[:conf.url.rfind('.') + 1]
+                    target_urls = ['{}{}'.format(base_addr, i)
+                                    for i in xrange(1, 255 + 1)]
+                except socket.error:
+                    errMsg = 'only id address acceptable'
+                    log.error(errMsg)
+            else:
+                target_urls = conf.url.split(',')
 
-        for url in target_urls:
-            if url:
-                kb.targets.put((url))
+            for url in target_urls:
+                if url:
+                    kb.targets.put((url))
+        else:
+            errMsg = 'the url needs to be set'
+            log.error(errMsg)
         return
+
     conf.urlFile = safeExpandUser(conf.urlFile)
     infoMsg = "parsing multiple targets list from '%s'" % conf.urlFile
     log.process(infoMsg)
