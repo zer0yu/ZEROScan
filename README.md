@@ -166,6 +166,7 @@ def exploit(target, headers=None):
 - [ ] Shodan API
 - [ ] Wiki
 - [ ] 添加常用模块
+- [ ] 解决扫描无回显RCE漏洞的验证问题
 
 ## 更新日志
 
