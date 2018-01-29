@@ -40,8 +40,6 @@ UNICODE_ENCODING = "utf-8"
 # Format used for representing invalid unicode characters
 INVALID_UNICODE_CHAR_FORMAT = r"\?%02x"
 
-USAGE = "pocsuite [options]"
-
 INDENT = " " * 2
 
 POC_ATTRS = ( "appName", "appVersion", "author", "description", "references")

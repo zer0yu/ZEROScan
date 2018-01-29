@@ -95,6 +95,7 @@ def setPaths():
     paths.USER_AGENTS = os.path.join(paths.ZEROSCAN_DATA_PATH, "user-agents.txt")
     paths.WEAK_PASS = os.path.join(paths.ZEROSCAN_DATA_PATH, "password-top100.txt")
     paths.LARGE_WEAK_PASS = os.path.join(paths.ZEROSCAN_DATA_PATH, "password-top1000.txt")
+    paths.WEB_DB = os.path.join(paths.ZEROSCAN_DATA_PATH, "web.db")
 
     paths.ZEROSCAN_OUTPUT_PATH = getUnicode(paths.get("ZEROSCAN_OUTPUT_PATH", os.path.join(paths.ZEROSCAN_ROOT_PATH, "output")), encoding=sys.getfilesystemencoding())
 
