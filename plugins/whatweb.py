@@ -5,6 +5,7 @@ import re
 import sys
 import sqlite3
 from lib.core.common import paths
+from modules.useragent import *
 from thirdparty import beautifulsoup
 from thirdparty import requests
 from thirdparty.requests.packages.urllib3.exceptions import InsecureRequestWarning
@@ -47,7 +48,8 @@ def expInfo():
 
 
 #User-Agent
-agent = {'UserAgent':'Mozilla/5.0 (Windows; U; MSIE 9.0; WIndows NT 9.0; en-US))'}
+ua = get_random_agent()
+agent = {'UserAgent':ua}
 
 #re
 rtitle   = re.compile(r'title="(.*)"')
