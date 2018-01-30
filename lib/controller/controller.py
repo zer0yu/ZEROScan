@@ -102,7 +102,8 @@ def _createTargetDirs():
 
 def _setRecordFiles():
     for (target, expname, result) in kb.results:
-        outputPath = os.path.join(getUnicode(paths.ZEROSCAN_OUTPUT_PATH), normalizeUnicode(getUnicode(target)))
+        outputPath = os.path.join(getUnicode(paths.ZEROSCAN_OUTPUT_PATH))
+        #outputPath = os.path.join(getUnicode(paths.ZEROSCAN_OUTPUT_PATH), normalizeUnicode(getUnicode(target)))
 
         if not os.path.isdir(outputPath):
             try:
