@@ -14,7 +14,7 @@ conf = AttribDict()
 # (6)multiThreadMode \ threadContinue \ threadException
 kb = AttribDict()
 
-registeredPocs = {}
+th = AttribDict()
 
 # zeroscan paths，本质上还是个字典类型
 paths = AttribDict()
