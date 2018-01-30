@@ -6,6 +6,7 @@ import re
 import sys
 import inspect
 import unicodedata
+import locale
 from lib.core.settings import UNICODE_ENCODING, INVALID_UNICODE_CHAR_FORMAT
 from lib.core.settings import (BANNER, GIT_PAGE, ISSUES_PAGE, PLATFORM, PYVERSION, VERSION_STRING)
 from lib.core.data import paths
@@ -27,7 +28,7 @@ def getUnicode(value, encoding=None, noneToNull=False):
     """
 
     if noneToNull and value is None:
-        return NULL
+        return u'NULL'
 
     if isListLike(value):
         value = list(getUnicode(_, encoding, noneToNull) for _ in value)

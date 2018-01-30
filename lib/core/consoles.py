@@ -17,10 +17,6 @@ from thirdparty.cmd2.cmd2 import Cmd
 
 
 def initializeExp():
-    # 加载文件夹下的poc时默认只加载plugins目录下的, plugins目录下可以新建文件夹, 如wordpress
-    # 默认情况不加载wordpress文件夹内的poc
-    # Usage: pcs-console.py plugins/wordpress tests
-    # 调用方式如上时可以将plugins/wordpress 和 tests两个文件夹下的poc导入
     expNumber = 0
     folders = []
     if not os.path.isdir(paths.ZEROSCAN_PLUGINS_PATH):
