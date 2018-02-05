@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 import copy
-
+import os
 from lib.core.data import kb
 from lib.core.data import conf
 from lib.core.common import paths
@@ -122,15 +122,22 @@ def SetOption(option, value):
     :return:
     """
     #TODO
-    #目标如果在文件中，必须将文件放在targets目录下
+    #目标如果在txt文件中，必须将文件放在targets目录下
     if option.upper() == "URL":
-        if "targets" in str(value):
-            conf.urlFile = str(value)
-            return "%s => %s" % (option, value)
-        else:
-            #这个是要check的
-            conf.url = str(value)
-            return "%s => %s" % (option, value)
+        path_files = os.listdir(paths.ZEROSCAN_TARGET_PATH)
+        for tmp_path_file in path_files:
+            if str(value) in tmp_path_file:
+                tmp_str = str(value)
+                if tmp_str[-4:] == '.txt':
+                    conf.urlFile = str(value)
+                    return "%s => %s" % (option, value)
+                else:
+                    conf.urlFile = str(value)+'.txt'
+                    return "%s => %s" % (option, value)
+            else:
+                #这个是要check的
+                conf.url = str(value)
+                return "%s => %s" % (option, value)
     elif option == "Thread":
         conf.threads = value
         return "%s => %s" % (option, value)

@@ -10,6 +10,7 @@ from lib.core.data import conf
 from lib.core import log
 from lib.core.common import getFileItems
 from lib.core.common import safeExpandUser
+from lib.core.common import paths
 from lib.core.exception import ZEROScanFilePathException
 from thirdparty.oset.pyoset import oset
 
@@ -43,7 +44,7 @@ def setMultipleTarget():
             errMsg = 'the url needs to be set'
             log.error(errMsg)
         return
-
+    conf.urlFile = paths.ZEROSCAN_TARGET_PATH +'/'+ conf.urlFile
     conf.urlFile = safeExpandUser(conf.urlFile)
     infoMsg = "parsing multiple targets list from '%s'" % conf.urlFile
     log.process(infoMsg)

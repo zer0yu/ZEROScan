@@ -240,6 +240,8 @@ class baseConsole(Cmd):
         :param arg: string, 以空格分割 option, value
         :return:
         """
+        initializeKb()
+        ClearConf()
         if kb.CurrentPlugin:
             if len(arg.split()) == 2:
                 option = arg.split()[0]
