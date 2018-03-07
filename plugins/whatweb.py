@@ -179,6 +179,18 @@ class CMSScanner(object):
 			pass
 
 def exploit(target, headers=None):
-    cms = CMSScanner(target)
-    cms.run()
-    return cms.result
+	if 'http://' in target or 'https://' in target:
+		cms = CMSScanner(target)
+		cms.run()
+		return cms.result
+	else:
+		try:
+			target = 'http://'+target
+			cms = CMSScanner(target)
+			cms.run()
+			return cms.result
+		except:
+			target = 'https://'+target
+			cms = CMSScanner(target)
+			cms.run()
+			return cms.result
