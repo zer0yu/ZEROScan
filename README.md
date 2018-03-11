@@ -1,21 +1,29 @@
 # ZEROScan
 
-[![Python 2.7](https://img.shields.io/badge/python-2.7-yellow.svg)](https://www.python.org/) 
+[![Python 2.7](https://img.shields.io/badge/python-2.7-yellow.svg)](https://www.python.org/) [![License](https://img.shields.io/crates/l/rustc-serialize.svg)](https://github.com/zer0yu/ZEROScan/blob/master/LICENSE)
 
 ## 简介
 
-ZEROScan 是批量漏洞检测框架，通过它可以很容易地获取或者开发漏洞检测插件，来对目标进行渗透测试。界面和使用方式借鉴了metasploit-franework框架，很容易上手使用和开发插件。
+ZEROScan 是多线程漏洞检测框架，通过它可以很容易地获取或者开发漏洞检测插件，来对目标进行渗透测试。界面和使用方式借鉴了metasploit-framework框架，很容易上手使用和开发插件。
 
 ## 特点
 
 - 支持多线程并发模式  
 - 极简式脚本编写，无需参考文档  
+- 支持Linux, Windows, Mac OSX, BSD
 
 ## 安装
 
-本框架采用 Python 语言开发，并且基础的第三方依赖包都已打包，只需要下载就可以直接进行使用。
+```
+$ git clone https://github.com/zer0yu/ZEROScan.git
+```
 
-(PS:但是如果插件有额外的需要模块，还需使用pip安装)
+或者你可以下载最新的zip源码包进行解压安装:
+
+```
+$ wget https://codeload.github.com/zer0yu/ZEROScan/zip/master
+$ unzip ZEROScan-master.zip
+```
 
 ## 使用
 
@@ -29,7 +37,7 @@ ZEROScan 是批量漏洞检测框架，通过它可以很容易地获取或者�
   / /__| |____| | \ \| |__| |____) | (_| (_| | | | |
  /_____|______|_|  \_\\____/|_____/ \___\__,_|_| |_|
 
-+ -- --=[ ZEROScan - 1.0.0dev ]
++ -- --=[ ZEROScan - 1.0 ]
 #执行help命令你可以查看每一个参数的说明。
 ZEROScan > help
 
@@ -75,7 +83,7 @@ ZEROScan > use demo
 #使用options命令来查看此插件需要设置的对应项
 ZEROScan exploit(demo) > options
 #批量扫描的文件需要放置于target目录下
-#批量扫描的文件暂时只能使用绝对路径
+#批量扫描的文件直接设置参数url为文件名即可(不需要加txt结尾)
 Name    Current Setting      Required  Description
 ------  -----------------  ----------  --------------------------
 URL                                 1  URL or URL file
