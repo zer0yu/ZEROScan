@@ -18,7 +18,7 @@ from lib.core.exception import ZEROScanValueException
 
 def runThreads(numThreads, threadFunction, forwardException=True, startThreadMsg=True):
     threads = []
-
+    numThreads = int(numThreads)
     kb.multiThreadMode = True
     kb.threadContinue = True
     kb.threadException = False

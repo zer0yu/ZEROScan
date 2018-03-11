@@ -138,13 +138,13 @@ def SetOption(option, value):
                 #这个是要check的
                 conf.url = str(value)
                 return "%s => %s" % (option, value)
-    elif option == "Thread":
+    elif option.upper() == "THREAD":
         conf.threads = value
         return "%s => %s" % (option, value)
-    elif option == "Cookie":
+    elif option.upper() == "COOKIE":
         conf.cookie = str(value)
         return "%s => %s" % (option, value)
-    elif option == "Report":
+    elif option.upper() == "REPORT":
         conf.report = value
         return "%s => %s" % (option, value)
     else:

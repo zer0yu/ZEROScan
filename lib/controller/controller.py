@@ -131,7 +131,7 @@ def _setRecordFiles():
         if not os.path.isfile(recordFile):
             try:
                 with open(recordFile, "w") as f:
-                    f.write("target,expname,result")
+                    pass
             except IOError, ex:
                 if "denied" in getUnicode(ex):
                     errMsg = "you don't have enough permissions "

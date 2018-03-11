@@ -44,10 +44,15 @@ def setMultipleTarget():
             errMsg = 'the url needs to be set'
             log.error(errMsg)
         return
-    conf.urlFile = paths.ZEROSCAN_TARGET_PATH +'/'+ conf.urlFile
-    conf.urlFile = safeExpandUser(conf.urlFile)
-    infoMsg = "parsing multiple targets list from '%s'" % conf.urlFile
-    log.process(infoMsg)
+    if paths.ZEROSCAN_TARGET_PATH in conf.urlFile:
+        conf.urlFile = safeExpandUser(conf.urlFile)
+        infoMsg = "parsing multiple targets list from '%s'" % conf.urlFile
+        log.process(infoMsg)
+    else:
+        conf.urlFile = paths.ZEROSCAN_TARGET_PATH +'/'+ conf.urlFile
+        conf.urlFile = safeExpandUser(conf.urlFile)
+        infoMsg = "parsing multiple targets list from '%s'" % conf.urlFile
+        log.process(infoMsg)
 
     if not os.path.isfile(conf.urlFile):
         errMsg = "the specified file does not exist"

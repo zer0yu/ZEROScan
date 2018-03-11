@@ -240,20 +240,22 @@ class baseConsole(Cmd):
         :param arg: string, 以空格分割 option, value
         :return:
         """
-        initializeKb()
-        ClearConf()
-        if kb.CurrentPlugin:
-            if len(arg.split()) == 2:
-                option = arg.split()[0]
-                value = arg.split()[1]
-                rn = SetOption(option, value)
-                if rn.startswith("Invalid option:"):
-                    log.error(rn)
+        try:
+            initializeKb()
+            if kb.CurrentPlugin:
+                if len(arg.split()) == 2:
+                    option = arg.split()[0]
+                    value = arg.split()[1]
+                    rn = SetOption(option, value)
+                    if rn.startswith("Invalid option:"):
+                        log.error(rn)
+                    else:
+                        print rn
                 else:
-                    print rn
+                    log.error("set <option> <value>")
             else:
-                log.error("set <option> <value>")
-        else:
+                log.error("Select a plugin first.")
+        except:
             log.error("Select a plugin first.")
 
     def complete_set(self, text, line, begidx, endidx):
