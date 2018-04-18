@@ -6,7 +6,7 @@ import sys
 import sqlite3
 from lib.core.common import paths
 from modules.useragent import *
-from thirdparty import beautifulsoup
+from bs4 import BeautifulSoup
 from thirdparty import requests
 from thirdparty.requests.packages.urllib3.exceptions import InsecureRequestWarning
 
