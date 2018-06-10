@@ -168,13 +168,6 @@ def exploit(target, headers=None):
     return yourDefinition()
 ```
 
-## TODO
-
-- [ ] ZoomEye API
-- [ ] Shodan API
-- [ ] Wiki
-- [ ] 添加常用模块
-
 ## 更新日志
 
 - v1.0.0
